@@ -1,0 +1,259 @@
+# --------------------
+# Flutter: Core Widgets & App Structure
+# --------------------
+
+# Import Material Library
+snippet impm
+	import 'package:flutter/material.dart';
+
+# main() function with runApp()
+snippet runapp
+	import 'package:flutter/material.dart';
+
+	void main() => runApp(const ${1:MyApp}());
+
+# StatelessWidget
+# The fundamental building block for widgets that don't manage state.
+snippet stless
+	class ${1:WidgetName} extends StatelessWidget {
+		const ${1:WidgetName}({super.key});
+
+		@override
+		Widget build(BuildContext context) {
+			return ${0:Container()};
+		}
+	}
+
+# StatefulWidget
+# A widget that has mutable state. This is the most common complex widget.
+snippet stful
+	class ${1:WidgetName} extends StatefulWidget {
+		const ${1:WidgetName}({super.key});
+
+		@override
+		State<${1:WidgetName}> createState() => _${1:WidgetName}State();
+	}
+
+	class _${1:WidgetName}State extends State<${1:WidgetName}> {
+		@override
+		Widget build(BuildContext context) {
+			return ${0:Container()};
+		}
+	}
+
+# Build method override
+snippet build
+	@override
+	Widget build(BuildContext context) {
+		return ${0:Container()};
+	}
+
+
+
+# --------------------
+# Flutter: StatefulWidget Lifecycle & State
+# --------------------
+
+# initState method
+# Called once when the stateful widget is inserted into the widget tree.
+snippet init
+	@override
+	void initState() {
+		super.initState();
+		${0}
+	}
+
+# dispose method
+# Called when this object is removed from the tree permanently.
+snippet dispose
+	@override
+	void dispose() {
+		${0}
+		super.dispose();
+	}
+
+# setState call
+# Notifies the framework that the internal state of this object has changed. [10, 12]
+snippet setst
+	setState(() {
+		${0}
+	});
+
+
+
+
+# --------------------
+# Flutter: Common UI & Layout Widgets
+# --------------------
+
+# Container
+# A convenience widget that combines common painting, positioning, and sizing widgets. [11, 24]
+snippet cont
+	Container(
+		${0}
+	)
+
+# Column
+# Lays out a list of widgets vertically. [3, 8]
+snippet col
+	Column(
+		children: [
+			${0}
+		],
+	)
+
+# Row
+# Lays out a list of widgets horizontally. [23, 29]
+snippet row
+	Row(
+		children: [
+			${0}
+		],
+	)
+
+# Text
+snippet text
+	Text('${1:text}')
+
+# ElevatedButton
+snippet btn
+	ElevatedButton(
+		onPressed: () {
+			${0}
+		},
+		child: const Text('${1:Button}'),
+	)
+
+# Scaffold
+# Implements the basic material design visual layout structure.
+snippet scaff
+	Scaffold(
+		appBar: AppBar(
+			title: const Text('${1:Title}'),
+		),
+		body: ${0:Container()},
+	)
+
+# Image.asset
+snippet imga
+	Image.asset('${1:assets/image.png}')
+
+# Icon
+snippet icon
+	Icon(${1:Icons.favorite})
+
+
+# --------------------
+# Flutter: Advanced Layout & Positioning
+# --------------------
+
+# Stack
+# A widget that positions its children relative to the edges of its box. Great for overlapping widgets.
+snippet stack
+	Stack(
+		children: [
+			${0}
+		],
+	)
+
+# Expanded
+# Expands a child of a Row, Column, or Flex so that the child fills the available space. [1, 15]
+snippet exp
+	Expanded(
+		child: ${0:Container()},
+	)
+
+# Padding
+# A widget that insets its child by the given padding.
+snippet pad
+	Padding(
+		padding: const EdgeInsets.all(${1:8.0}),
+		child: ${0:Container()},
+	)
+
+# Center
+# A widget that centers its child within itself.
+snippet center
+	Center(
+		child: ${0:Container()},
+	)
+
+# SizedBox
+# A box with a specified size. Often used for creating space between widgets. [2, 16]
+snippet sizedbox
+	SizedBox(
+		width: ${1:100},
+		height: ${2:100},
+		${0}
+	)
+
+
+
+# --------------------
+# Flutter: Lists & Scrolling
+# --------------------
+
+# ListView.builder
+# Creates a scrollable, linear array of widgets that are created on demand. This is the most common and efficient way to create lists.
+snippet listviewb
+	ListView.builder(
+		itemCount: ${1:itemCount},
+		itemBuilder: (BuildContext context, int index) {
+			return ${0:ListTile()};
+		},
+	)
+
+# SingleChildScrollView
+# A box in which a single widget can be scrolled.
+snippet singlechildsv
+	SingleChildScrollView(
+		child: ${0:Column()},
+	)
+
+# ListTile
+# A single fixed-height row that typically contains some text as well as a leading or trailing icon.
+snippet listtile
+	ListTile(
+		leading: const Icon(${1:Icons.person}),
+		title: Text('${2:Title}'),
+		subtitle: Text('${3:Subtitle}'),
+		onTap: () {
+			${0}
+		},
+	)
+
+
+
+# --------------------
+# Flutter: User Input & Navigation
+# --------------------
+
+# TextFormField
+# A text field that's part of a Form. Includes validation and other form features.
+snippet textff
+	TextFormField(
+		decoration: const InputDecoration(
+			labelText: '${1:Label}',
+			hintText: '${2:Hint}',
+			border: OutlineInputBorder(),
+		),
+		validator: (value) {
+			if (value == null || value.isEmpty) {
+				return 'Please enter some text';
+			}
+			return null;
+		},
+	)
+
+# Navigator.push
+# Pushes a new route onto the navigator's stack.
+snippet navpush
+	Navigator.push(
+		context,
+		MaterialPageRoute(builder: (context) => const ${1:NewScreen}()),
+	);
+
+# Navigator.pop
+# Pops the top-most route off the navigator.
+snippet navpop
+	Navigator.pop(context);

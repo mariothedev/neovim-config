@@ -1,0 +1,394 @@
+# Core Python Snippets for Snippy
+
+# --------------------
+# Conditional Statements
+# --------------------
+
+snippet if
+	if ${1:condition}:
+		${0:pass}
+
+snippet ife
+	if ${1:condition}:
+		${2:pass}
+	else:
+		${0:pass}
+
+snippet ifel
+	if ${1:condition}:
+		${2:pass}
+	elif ${3:condition}:
+		${4:pass}
+	else:
+		${0:pass}
+
+# --------------------
+# Loops
+# --------------------
+
+snippet for
+	for ${1:item} in ${2:iterable}:
+		${0:pass}
+
+snippet forr
+	for ${1:i} in range(${2:start}, ${3:stop}):
+		${0:pass}
+
+snippet while
+	while ${1:condition}:
+		${0:pass}
+
+# --------------------
+# Functions and Classes
+# --------------------
+
+snippet def
+	def ${1:function_name}(${2:args}):
+		"""${3:docstring}"""
+		${0:pass}
+
+snippet class
+	class ${1:ClassName}:
+		"""${2:docstring}"""
+		def __init__(self, ${3:args}):
+			${4:pass}
+		${0}
+
+# --------------------
+# Data Structures
+# --------------------
+
+snippet list
+	[${1}]
+
+snippet dict
+	{${1:key}: ${2:value}}
+
+snippet tuple
+	(${1})
+
+# --------------------
+# Error Handling
+# --------------------
+
+snippet try
+	try:
+		${1:pass}
+	except ${2:Exception} as ${3:e}:
+		${0:pass}
+
+snippet tryf
+	try:
+		${1:pass}
+	except ${2:Exception} as ${3:e}:
+		${4:pass}
+	finally:
+		${0:pass}
+
+# --------------------
+# File Handling
+# --------------------
+
+snippet with
+	with open(${1:file}, '${2:r}') as ${3:f}:
+		${0:pass}
+
+# --------------------
+# Boilerplate
+# --------------------
+
+snippet main
+	if __name__ == '__main__':
+		${0:pass}
+
+# --------------------
+# Asyncio
+# --------------------
+
+# Async Function
+snippet adef
+	async def ${1:function_name}(${2:args}):
+		"""${3:docstring}"""
+		${0}
+
+# Async For Loop
+snippet afor
+	async for ${1:item} in ${2:iterable}:
+		${0:pass}
+
+# Async With Statement
+snippet awith
+	async with ${1:context_manager} as ${2:variable}:
+		${0:pass}
+
+# Await
+snippet aw
+	await ${1:coroutine}
+
+# Main Async Execution Block
+snippet amain
+	import asyncio
+
+	async def main():
+		${0}
+
+	if __name__ == '__main__':
+		asyncio.run(main())
+
+# Async Class
+snippet aclass
+	class ${1:AsyncClassName}:
+		"""${2:docstring}"""
+		async def __init__(self, ${3:args}):
+			${4:pass}
+
+		async def ${5:method_name}(self):
+			${0}
+
+
+# --------------------
+# Regular Expressions
+# --------------------
+
+# Import re
+snippet re
+	import re
+
+# re.search
+snippet search
+	match = re.search(r'${1:pattern}', ${2:string})
+	if match:
+		${0:pass}
+
+# re.findall
+snippet findall
+	matches = re.findall(r'${1:pattern}', ${2:string})
+	${0}
+
+# re.sub
+snippet sub
+	new_string = re.sub(r'${1:pattern}', r'${2:replacement}', ${3:string})
+	${0}
+
+# re.compile
+snippet compile
+	pattern = re.compile(r'${1:pattern}')
+	${0}
+
+# --------------------
+# Comprehensions & Generators
+# --------------------
+
+# List Comprehension
+snippet lc
+	[${1:expression} for ${2:item} in ${3:iterable}]
+
+# List Comprehension with condition
+snippet lci
+	[${1:expression} for ${2:item} in ${3:iterable} if ${4:condition}]
+
+# Dictionary Comprehension
+snippet dc
+	{${1:key}: ${2:value} for ${3:item} in ${4:iterable}}
+
+# Set Comprehension
+snippet sc
+	{${1:expression} for ${2:item} in ${3:iterable}}
+
+# Generator Expression
+snippet gen
+	(${1:expression} for ${2:item} in ${3:iterable})
+
+# --------------------
+# Functional Styles
+# --------------------
+
+# Lambda function
+snippet la
+	lambda ${1:args}: ${0:expression}
+
+# map
+snippet map
+	map(lambda ${1:item}: ${2:expression}, ${3:iterable})
+
+# filter
+snippet filter
+	filter(lambda ${1:item}: ${2:condition}, ${3:iterable})
+
+# --------------------
+# Standard Library Helpers
+# --------------------
+
+# Basic Logging Setup
+snippet log
+	import logging
+	logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+	${0}
+
+# Argparse Boilerplate
+snippet argp
+	import argparse
+
+	parser = argparse.ArgumentParser(description='${1:A description of your script.}')
+	parser.add_argument('--${2:argument}', type=${3:str}, required=True, help='${4:Help text for the argument.}')
+	args = parser.parse_args()
+
+	${0:print(f"Argument value: {args.argument}")}
+
+# JSON load from file
+snippet jload
+	import json
+
+	with open('${1:file.json}', 'r') as f:
+		data = json.load(f)
+	${0}
+
+# JSON dump to file
+snippet jdump
+	import json
+
+	data = ${1:{'key': 'value'}}
+	with open('${2:file.json}', 'w') as f:
+		json.dump(data, f, indent=4)
+	${0}
+
+
+
+# Raise an exception
+snippet raise
+	raise ${1:Exception}('${2:Error message}')
+
+# Assert statement
+snippet assert
+	assert ${1:condition}, '${2:Assertion message}'
+
+
+
+
+# --------------------
+# Asyncio (prefixed with 'asy' for easy discovery)
+# --------------------
+
+# Async Function ('asy' + 'def')
+snippet asyncdef
+	async def ${1:function_name}(${2:args}):
+		"""${3:docstring}"""
+		${0}
+
+# Async For Loop ('asy' + 'for')
+snippet asyncfor
+	async for ${1:item} in ${2:iterable}:
+		${0:pass}
+
+# Async With Statement ('asy' + 'with')
+snippet asywith
+	async with ${1:context_manager} as ${2:variable}:
+		${0:pass}
+
+# Main Async Execution Block ('asy' + 'main')
+snippet asymain
+	import asyncio
+
+	async def main():
+		${0}
+
+	if __name__ == '__main__':
+		asyncio.run(main())
+
+# Await ('asy' + 'await')
+snippet await
+	await ${1:coroutine}
+
+# Asyncio Sleep ('asy' + 'sleep')
+snippet sleep
+	await asyncio.sleep(${1:seconds})
+
+# Create Asyncio Task ('asy' + 'task')
+snippet create
+	task = asyncio.create_task(${1:coroutine})
+
+# Asyncio Gather ('asy' + 'gather')
+snippet gather
+	results = await asyncio.gather(
+		${1:task1},
+		${2:task2},
+		${0}
+	)
+
+
+
+# --------------------
+# Threading
+# --------------------
+
+# Import threading
+snippet threading
+	import threading
+
+# Basic Thread Creation and Start
+snippet threads
+	def ${1:worker_function}():
+		${2:pass}
+
+	thread = threading.Thread(target=${1:worker_function})
+	thread.start()
+	${0}
+
+# Thread Creation, Start, and Join
+snippet threadj
+	def ${1:worker_function}():
+		${2:pass}
+
+	thread = threading.Thread(target=${1:worker_function})
+	thread.start()
+	thread.join()
+	${0}
+
+# Thread with Arguments
+snippet threadargs
+	def ${1:worker_function}(${2:arg1}, ${3:arg2}):
+		${4:pass}
+
+	thread = threading.Thread(target=${1:worker_function}, args=(${5:val1}, ${6:val2}))
+	thread.start()
+	${0}
+
+# Threading Lock
+snippet lock
+	lock = threading.Lock()
+
+	with lock:
+		${0:# critical section}
+
+# ThreadPoolExecutor (Modern & Recommended)
+snippet futures
+	from concurrent.futures import ThreadPoolExecutor
+
+	def ${1:worker_function}(${2:arg}):
+		${3:pass}
+
+	with ThreadPoolExecutor(max_workers=${4:5}) as executor:
+		executor.map(${1:worker_function}, ${5:iterable})
+		${0}
+
+# ThreadPoolExecutor with submit
+snippet threadpool
+	from concurrent.futures import ThreadPoolExecutor, as_completed
+
+	def ${1:worker_function}(${2:arg}):
+		${3:return result}
+
+	with ThreadPoolExecutor(max_workers=${4:5}) as executor:
+		futures = [executor.submit(${1:worker_function}, ${5:item}) for item in ${6:iterable}]
+		for future in as_completed(futures):
+			result = future.result()
+			${0}
+
+# Threading Semaphore
+snippet semaphore
+	import threading
+
+	semaphore = threading.Semaphore(${1:value})
+
+	with semaphore:
+		${0:# Code that accesses the limited resource}

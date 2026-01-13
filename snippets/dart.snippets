@@ -1,0 +1,289 @@
+# --------------------
+# Core Dart Snippets
+# --------------------
+
+# Main function (entry point for an application)
+snippet main
+	void main() {
+		${0}
+	}
+
+# Print to console
+snippet print
+	print(${1});
+
+# --------------------
+# Variables & Data Structures
+# --------------------
+
+# Final variable (runtime constant)
+snippet final
+	final ${1:variableName} = ${2:value};
+
+# Const variable (compile-time constant)
+snippet const
+	const ${1:variableName} = ${2:value};
+
+# List literal
+snippet list
+	[${1}]
+
+# Set literal
+snippet set
+	{${1}}
+
+# Map literal
+snippet map
+	{'${1:key}': ${2:value}}
+
+# --------------------
+# Control Flow
+# --------------------
+
+# If statement
+snippet if
+	if (${1:condition}) {
+		${0}
+	}
+
+# If-Else statement
+snippet ife
+	if (${1:condition}) {
+		${2}
+	} else {
+		${0}
+	}
+
+# For loop
+snippet for
+	for (var ${1:item} in ${2:iterable}) {
+		${0}
+	}
+
+# Indexed for loop
+snippet fori
+	for (var i = 0; i < ${1:count}; i++) {
+		${0}
+	}
+
+# While loop
+snippet while
+	while (${1:condition}) {
+		${0}
+	}
+
+# Switch statement
+snippet switch
+	switch (${1:expression}) {
+		case ${2:value}:
+			${3}
+			break;
+		default:
+			${0}
+	}
+
+# --------------------
+# Functions
+# --------------------
+
+# Simple function
+snippet fun
+	${1:void} ${2:functionName}(${3}) {
+		${0}
+	}
+
+# Fat arrow function
+snippet =>
+	${1:String} ${2:functionName}() => ${0:expression};
+
+# --------------------
+# Classes
+# --------------------
+
+# Class definition
+snippet class
+	class ${1:ClassName} {
+		${2}
+
+		${1:ClassName}(${3});
+
+		${0}
+	}
+
+# Class with constructor fields
+snippet classc
+	class ${1:ClassName} {
+		${2:String property};
+
+		${1:ClassName}(this.${2:property});
+
+		${0}
+	}
+
+# --------------------
+# Error Handling
+# --------------------
+
+# Try-Catch block
+snippet try
+	try {
+		${1}
+	} catch (e) {
+		${0}
+	}
+
+# Try-On-Catch block
+snippet tryon
+	try {
+		${1}
+	} on ${2:Exception} catch (e) {
+		${0}
+	}
+
+# Try-Catch-Finally block
+snippet tryf
+	try {
+		${1}
+	} catch (e) {
+		${2}
+	} finally {
+		${0}
+	}
+
+
+# --------------------
+# Asynchronous Programming (Futures, Await, Streams)
+# --------------------
+
+# Async main function
+snippet maina
+	Future<void> main() async {
+		${0}
+	}
+
+# Async function
+# Defines a function that returns a Future.
+snippet funa
+	Future<${1:void}> ${2:functionName}() async {
+		${0}
+	}
+
+# Await a Future
+# Pauses execution until the Future completes.
+snippet await
+	final ${1:result} = await ${2:future};
+
+# Future constructor
+# Creates a Future from a potential time-consuming computation.
+snippet future
+	Future<${1:String}>() {
+		// Perform a long-running operation and return a value.
+		return ${0:'Result'};
+	}
+
+# Future.delayed
+# Creates a Future that completes after a delay.
+snippet futd
+	await Future.delayed(const Duration(seconds: ${1:2}), () {
+		${0}
+	});
+
+# Future.value
+# Creates a future that completes immediately with a value.
+snippet futv
+	Future.value(${1:value})
+
+# Future .then() chain
+# The classic way to handle a Future's result.
+snippet then
+	${1:future}.then((${2:value}) {
+		${0}
+	}).catchError((${3:err}) {
+		// Handle errors
+	});
+
+# Async Generator (for creating a Stream)
+snippet funs
+	Stream<${1:int}> ${2:countStream}(int max) async* {
+		for (int i = 0; i < max; i++) {
+			yield i;
+		}
+	}
+
+# Await for (to consume a Stream)
+snippet awaitfor
+	await for (final ${1:value} in ${2:stream}) {
+		${0}
+	}
+
+# Stream.listen
+# Subscribes to a stream to get notifications for events.
+snippet listen
+	${1:stream}.listen((${2:event}) {
+		${0}
+	});
+
+
+# --------------------
+# More Core Dart (Classes, Enums, Null Safety)
+# --------------------
+
+# Import a library
+snippet imp
+	import '${1:package:name/name.dart}';
+
+# Late final variable
+# For non-nullable variables initialized after their declaration.
+snippet latef
+	late final ${1:String} ${2:variableName};
+
+# Enum definition
+snippet enum
+	enum ${1:EnumName} {
+		${2:value1},
+		${3:value2}
+	}
+
+# Abstract Class
+# Defines an interface that other classes must implement.
+snippet abs
+	abstract class ${1:ClassName} {
+		${0}
+	}
+
+# Extension method
+# Adds new functionality to existing classes.
+snippet ext
+	extension ${1:Name} on ${2:Type} {
+		${0}
+	}
+
+# Mixin
+# A way of reusing a class's code in multiple class hierarchies.
+snippet mixin
+	mixin ${1:MixinName} {
+		${0}
+	}
+
+# Getter
+snippet get
+	${1:String} get ${2:propertyName} => ${3:_privateField};
+
+# Setter
+snippet set
+	set ${1:propertyName}(${2:String} value) {
+		${3:_privateField} = value;
+	}
+
+# Named Constructor
+snippet namedctor
+	${1:ClassName}.${2:constructorName}(${3}) {
+		${0}
+	}
+
+# Factory Constructor
+# Used to implement constructors that don't always create a new instance of their class.
+snippet factory
+	factory ${1:ClassName}.fromJson(Map<String, dynamic> json) {
+		return ${1:ClassName}(${0});
+	}
