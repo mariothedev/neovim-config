@@ -15,9 +15,9 @@
 -- ====================================
 -- lazy.nvim is a package manager for installing plugins. Other package managers include `Packer`, `Paq` and `vim-plug`.
 -- Mason is a tool manager for LSP, DAP, linters and formatters.
--- It installs external executables—LSP servers, DAP adapters, linters/formatters—so you don’t have to manage them with pip or npm yourself.
+-- It installs external executables—LSP servers, DAP adapters, linters/formatters—so you don't have to manage them with pip or npm yourself.
 -- Mason does include many popular formatters (e.g. black, prettier, stylua) so you can often install them via :MasonInstall <formatter>.
--- Some formatters not in Mason’s registry (or if you prefer a specific version) you’ll indeed install manually (e.g. pip install autopep8) and then point Mason (or your Conform/null-ls config) at the binary path.
+-- Some formatters not in Mason's registry (or if you prefer a specific version) you'll indeed install manually (e.g. pip install autopep8) and then point Mason (or your Conform/null-ls config) at the binary path.
 
 -- COMMANDS
 -- ====================================
@@ -699,7 +699,6 @@ require("lazy").setup({
                         "ts_ls",             -- TypeScript/JavaScript
                         "gopls",             -- Go
                         "eslint",            -- JavaScript/TypeScript linting
-                        "dartls",           -- Dart
                     }
                 })
             end
@@ -811,7 +810,7 @@ require("lazy").setup({
 
                 -- Pragmatic filtering
                 local function is_member_ctx(ctx)
-                    -- e.g. "obj." , "obj.ab"  → we’re after a dot near the cursor
+                    -- e.g. "obj." , "obj.ab"  → we're after a dot near the cursor
                     return ctx.cursor_before_line:find("%.[%w_]*$") ~= nil
                 end
                 local function typed_prefix(ctx)
@@ -903,7 +902,7 @@ require("lazy").setup({
 
                     mapping = {
                         ["<C-y>"]     = cmp.mapping.confirm({ select = true }), -- ONLY Ctrl+Y confirms
-                        ["<CR>"]      = cmp.config.disable,                     -- Enter won’t confirm
+                        ["<CR>"]      = cmp.config.disable,                     -- Enter won't confirm
                         ["<C-e>"]     = cmp.mapping.abort(),
                         ["<C-n>"]     = cmp.mapping.select_next_item(),
                         ["<C-p>"]     = cmp.mapping.select_prev_item(),
@@ -938,12 +937,11 @@ require("lazy").setup({
 
 
 
-        -- Additional completion sources
+        -- LSP Configuration using native Neovim 0.11+ API
         {
             "neovim/nvim-lspconfig",
             dependencies = {"hrsh7th/cmp-nvim-lsp"},
             config = function()
-                local lspconfig = require("lspconfig")
                 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
                 -- Enhanced capabilities for completion
@@ -957,71 +955,40 @@ require("lazy").setup({
                     }
                 }
 
+                -- LSP keymaps on attach
+                vim.api.nvim_create_autocmd('LspAttach', {
+                    callback = function(args)
+                        local bufnr = args.buf
+                        local bufmap = function(mode, lhs, rhs, desc)
+                            vim.keymap.set(mode, lhs, rhs, {buffer = bufnr, desc = desc})
+                        end
 
-                -- Save all files after any LSP rename applies edits
-                -- local orig_rename = vim.lsp.handlers["textDocument/rename"]
-                -- vim.lsp.handlers["textDocument/rename"] = function(err, result, ctx, conf)
-                --     local ret = orig_rename and orig_rename(err, result, ctx, conf)
-                --     if not err and result and (result.changes or result.documentChanges) then
-                --         vim.schedule(function()
-                --             pcall(vim.cmd, "silent! wa")  -- let BufWritePre hooks run (eslint, formatters, etc.)
-                --         end)
-                --     end
-                --     return ret
-                -- end
+                        bufmap("n", "K", vim.lsp.buf.hover, "LSP: Hover Documentation")
+                        bufmap("n", "gd", function()
+                            require("telescope.builtin").lsp_definitions{
+                                show_line = true,
+                                trim_text = true,
+                            }
+                        end, "LSP: Definitions (Telescope)")
+                        bufmap("n", "gD", function()
+                            vim.lsp.buf.definition()
+                            vim.defer_fn(function()
+                                if #vim.fn.getqflist() > 1 then vim.cmd("copen") end
+                            end, 0)
+                        end, "LSP: Go to Definition (native)")
+                        bufmap("n", "gr", function()
+                            require("telescope.builtin").lsp_references({
+                                include_declaration = false,
+                                show_line = true,
+                                trim_text = false,
+                            })
+                        end, "LSP: Show References in Telescope")
+                        bufmap("n", "gs", vim.lsp.buf.rename, "LSP: Rename Symbol")
+                    end,
+                })
 
-
-                local on_attach = function(client, bufnr)
-                    local bufmap = function(mode, lhs, rhs, desc)
-                        vim.keymap.set(mode, lhs, rhs, {buffer = bufnr, desc = desc})
-                    end
-
-                    -- bufmap("n", "gd", vim.lsp.buf.definition, "LSP: Go to Definition")
-                    bufmap("n", "K", vim.lsp.buf.hover, "LSP: Hover Documentation")
-
-                    -- bufmap("n", "gd", function()
-                    --   tb.lsp_definitions({
-                    --     show_line = true,   -- preview the line like your quickfix picker
-                    --     trim_text = true,   -- cleaner display
-                    --     -- jump_type = "never", -- uncomment if you ever see auto-jumps (rare)
-                    --   })
-                    -- end, "LSP: Definitions (Telescope)")
-                    --
-                    --
-                    --
-                    bufmap("n", "gd", function()
-                      require("telescope.builtin").lsp_definitions{
-                        show_line = true,
-                        trim_text = true,
-                        -- jump_type = "never",
-                      }
-                    end, "LSP: Definitions (Telescope)")
-                    --
-                    --
-
-                    bufmap("n", "gD", function()
-                      vim.lsp.buf.definition()
-                      vim.defer_fn(function()
-                        if #vim.fn.getqflist() > 1 then vim.cmd("copen") end
-                      end, 0)
-                    end, "LSP: Go to Definition (native)")
-
-
-                    bufmap("n", "gr", function()
-                        require("telescope.builtin").lsp_references({
-                            include_declaration = false,
-                            show_line = true,
-                            trim_text = false,
-                        })
-                    end, "LSP: Show References in Telescope")
-
-                    -- bufmap("n", "gca", vim.lsp.buf.code_action, "LSP: Code Action")
-                    bufmap("n", "gs", vim.lsp.buf.rename, "LSP: Rename Symbol")
-                end
-
-                -- Python with enhanced settings
-                lspconfig.pyright.setup {
-                    on_attach = on_attach,
+                -- Configure LSP servers using native vim.lsp.config
+                vim.lsp.config['pyright'] = {
                     capabilities = capabilities,
                     settings = {
                         python = {
@@ -1036,49 +1003,26 @@ require("lazy").setup({
                     }
                 }
 
-                -- HTML with enhanced completion
-                lspconfig.html.setup {
-                    on_attach = on_attach,
+                vim.lsp.config['html'] = {
                     capabilities = capabilities,
                     settings = {
                         html = {
-                            suggest = {
-                                html5 = true,
-                            },
-                            hover = {
-                                documentation = true,
-                                references = true,
-                            },
+                            suggest = { html5 = true },
+                            hover = { documentation = true, references = true },
                         }
                     }
                 }
 
-                -- CSS with enhanced completion
-                lspconfig.cssls.setup {
-                    on_attach = on_attach,
+                vim.lsp.config['cssls'] = {
                     capabilities = capabilities,
                     settings = {
-                        css = {
-                            suggest = {
-                                unknownVendorSpecificProperties = "ignore"
-                            },
-                        },
-                        less = {
-                            suggest = {
-                                unknownVendorSpecificProperties = "ignore"
-                            },
-                        },
-                        scss = {
-                            suggest = {
-                                unknownVendorSpecificProperties = "ignore"
-                            },
-                        },
+                        css = { suggest = { unknownVendorSpecificProperties = "ignore" } },
+                        less = { suggest = { unknownVendorSpecificProperties = "ignore" } },
+                        scss = { suggest = { unknownVendorSpecificProperties = "ignore" } },
                     }
                 }
 
-                -- TypeScript/JavaScript with enhanced completion
-                lspconfig.ts_ls.setup {
-                    on_attach = on_attach,
+                vim.lsp.config['ts_ls'] = {
                     capabilities = capabilities,
                     settings = {
                         typescript = {
@@ -1114,15 +1058,11 @@ require("lazy").setup({
                     }
                 }
 
-                -- Go with enhanced completion
-                lspconfig.gopls.setup {
-                    on_attach = on_attach,
+                vim.lsp.config['gopls'] = {
                     capabilities = capabilities,
                     settings = {
                         gopls = {
-                            analyses = {
-                                unusedparams = true,
-                            },
+                            analyses = { unusedparams = true },
                             staticcheck = true,
                             gofumpt = true,
                             completeUnimported = true,
@@ -1132,36 +1072,25 @@ require("lazy").setup({
                     },
                 }
 
-                -- ESLint for JavaScript/TypeScript linting
-                lspconfig.eslint.setup {
-                    on_attach = function(client, bufnr)
-                        -- Only show errors, not warnings
-                        vim.api.nvim_create_autocmd("BufWritePre", {
-                            buffer = bufnr,
-                            command = "EslintFixAll",
-                        })
-                        on_attach(client, bufnr)
+                vim.lsp.config['eslint'] = {
+                    capabilities = capabilities,
+                }
+
+                -- ESLint auto-fix on save
+                vim.api.nvim_create_autocmd('LspAttach', {
+                    callback = function(args)
+                        local client = vim.lsp.get_client_by_id(args.data.client_id)
+                        if client and client.name == 'eslint' then
+                            vim.api.nvim_create_autocmd("BufWritePre", {
+                                buffer = args.buf,
+                                command = "EslintFixAll",
+                            })
+                        end
                     end,
-                    capabilities = capabilities,
-                }
+                })
 
-
-                -- Dart/Flutter with enhanced completion and Flutter-specific settings
-                lspconfig.dartls.setup {
-                    on_attach = on_attach,
-                    capabilities = capabilities,
-                    settings = {
-                        dart = {
-                            -- These are helpful Flutter-specific features
-                            flutterOutline = true,
-                            showClosingLabels = true,
-
-                            -- This is the path we found earlier
-                            sdkPath = "/home/mc/Development/flutter/bin/cache/dart-sdk",
-                        }
-                    }
-                }
-
+                -- Enable all configured servers
+                vim.lsp.enable({'pyright', 'html', 'cssls', 'ts_ls', 'gopls', 'eslint'})
             end
         },
 
@@ -1225,100 +1154,61 @@ require("lazy").setup({
             end,
         },
 
-        -- Treesitter for syntax highlighting and text objects
+        -- Treesitter for syntax highlighting (pinned to last stable version with old API)
         {
             "nvim-treesitter/nvim-treesitter",
+            version = "v0.9.2",
             build = ":TSUpdate",
             config = function()
                 require("nvim-treesitter.configs").setup({
                     ensure_installed = {
-                        "python", "javascript", "typescript", "html", "css", 
+                        "python", "javascript", "typescript", "html", "css",
                         "go", "lua", "json", "yaml", "markdown", "dart",
                     },
-                    highlight = {
-                        enable = true,
-                    },
-                    indent = {
-                        enable = true,
-                    },
+                    highlight = { enable = true },
+                    indent = { enable = true },
                 })
             end,
         },
 
-        -- Treesitter text objects for arguments, functions, etc.
+        -- Treesitter text objects (pinned to compatible version)
         {
             "nvim-treesitter/nvim-treesitter-textobjects",
+            commit = "ad8f0a472148c3e0ae9f7b66f03a8edd53a94222",
             dependencies = {"nvim-treesitter/nvim-treesitter"},
             config = function()
                 require("nvim-treesitter.configs").setup({
                     textobjects = {
                         select = {
                             enable = true,
-                            lookahead = true, -- Automatically jump forward to textobj
+                            lookahead = true,
                             keymaps = {
-                                -- Arguments
-                                ["aa"] = "@parameter.outer",  -- around argument
-                                ["ia"] = "@parameter.inner",  -- inside argument
-
-                                -- Functions
-                                ["af"] = "@function.outer",   -- around function
-                                ["if"] = "@function.inner",   -- inside function
-
-                                -- Classes
-                                ["ac"] = "@class.outer",      -- around class
-                                ["ic"] = "@class.inner",      -- inside class
-
-                                -- Conditionals (if statements)
-                                ["ai"] = "@conditional.outer", -- around if
-                                ["ii"] = "@conditional.inner", -- inside if
-
-                                -- Loops
-                                ["al"] = "@loop.outer",       -- around loop
-                                ["il"] = "@loop.inner",       -- inside loop
-
-                                -- Comments
-                                ["a/"] = "@comment.outer",    -- around comment
-                                ["i/"] = "@comment.inner",    -- inside comment
+                                ["aa"] = "@parameter.outer",
+                                ["ia"] = "@parameter.inner",
+                                ["af"] = "@function.outer",
+                                ["if"] = "@function.inner",
+                                ["ac"] = "@class.outer",
+                                ["ic"] = "@class.inner",
+                                ["ai"] = "@conditional.outer",
+                                ["ii"] = "@conditional.inner",
+                                ["al"] = "@loop.outer",
+                                ["il"] = "@loop.inner",
+                                ["a/"] = "@comment.outer",
+                                ["i/"] = "@comment.inner",
                             },
                         },
                         move = {
                             enable = true,
-                            set_jumps = true, -- whether to set jumps in the jumplist
-                            goto_next_start = {
-                                ["]f"] = "@function.outer",
-                                ["]c"] = "@class.outer",
-                                ["]a"] = "@parameter.outer",
-                                ["]l"] = "@loop.outer",
-                            },
-                            goto_next_end = {
-                                ["]F"] = "@function.outer",
-                                ["]C"] = "@class.outer",
-                                ["]A"] = "@parameter.outer",
-                                ["]L"] = "@loop.outer",
-                            },
-                            goto_previous_start = {
-                                ["[f"] = "@function.outer",
-                                ["[c"] = "@class.outer",
-                                ["[a"] = "@parameter.outer",
-                                ["[l"] = "@loop.outer",
-                            },
-                            goto_previous_end = {
-                                ["[F"] = "@function.outer",
-                                ["[C"] = "@class.outer",
-                                ["[A"] = "@parameter.outer",
-                                ["[L"] = "@loop.outer",
-                            },
+                            set_jumps = true,
+                            goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.outer", ["]l"] = "@loop.outer" },
+                            goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.outer", ["]L"] = "@loop.outer" },
+                            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.outer", ["[l"] = "@loop.outer" },
+                            goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.outer", ["[L"] = "@loop.outer" },
                         },
                         swap = {
                             enable = true,
-                            swap_next = {
-                                ["<leader>na"] = "@parameter.inner", -- swap with next argument
-                                ["<leader>nf"] = "@function.outer",  -- swap with next function
-                            },
-                            swap_previous = {
-                                ["<leader>pa"] = "@parameter.inner", -- swap with previous argument
-                                ["<leader>pf"] = "@function.outer",  -- swap with previous function
-                            },
+                            swap_next = { ["<leader>na"] = "@parameter.inner", ["<leader>nf"] = "@function.outer" },
+                            swap_previous = { ["<leader>pa"] = "@parameter.inner", ["<leader>pf"] = "@function.outer" },
                         },
                     },
                 })
