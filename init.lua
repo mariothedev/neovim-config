@@ -699,6 +699,7 @@ require("lazy").setup({
                         "ts_ls",             -- TypeScript/JavaScript
                         "gopls",             -- Go
                         "eslint",            -- JavaScript/TypeScript linting
+                        "dartls"
                     }
                 })
             end
@@ -1076,6 +1077,17 @@ require("lazy").setup({
                     capabilities = capabilities,
                 }
 
+                vim.lsp.config['dartls'] = {
+                    capabilities = capabilities,
+                    settings = {
+                        dart = {
+                            flutterOutline = true,
+                            showClosingLabels = true,
+                        }
+                    }
+                }
+
+
                 -- ESLint auto-fix on save
                 vim.api.nvim_create_autocmd('LspAttach', {
                     callback = function(args)
@@ -1090,7 +1102,7 @@ require("lazy").setup({
                 })
 
                 -- Enable all configured servers
-                vim.lsp.enable({'pyright', 'html', 'cssls', 'ts_ls', 'gopls', 'eslint'})
+                vim.lsp.enable({'pyright', 'html', 'cssls', 'ts_ls', 'gopls', 'eslint', 'dartls'})
             end
         },
 
