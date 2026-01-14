@@ -1169,7 +1169,7 @@ require("lazy").setup({
         -- Treesitter for syntax highlighting (pinned to last stable version with old API)
         {
             "nvim-treesitter/nvim-treesitter",
-            version = "v0.9.2",
+            -- version = "v0.9.2",
             build = ":TSUpdate",
             config = function()
                 require("nvim-treesitter.configs").setup({
@@ -1186,7 +1186,7 @@ require("lazy").setup({
         -- Treesitter text objects (pinned to compatible version)
         {
             "nvim-treesitter/nvim-treesitter-textobjects",
-            commit = "ad8f0a472148c3e0ae9f7b66f03a8edd53a94222",
+            -- commit = "ad8f0a472148c3e0ae9f7b66f03a8edd53a94222",
             dependencies = {"nvim-treesitter/nvim-treesitter"},
             config = function()
                 require("nvim-treesitter.configs").setup({
