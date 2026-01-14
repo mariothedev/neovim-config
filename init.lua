@@ -699,7 +699,7 @@ require("lazy").setup({
                         "ts_ls",             -- TypeScript/JavaScript
                         "gopls",             -- Go
                         "eslint",            -- JavaScript/TypeScript linting
-                        "dartls"
+                        -- "dartls"
                     }
                 })
             end
@@ -1130,7 +1130,6 @@ require("lazy").setup({
             "lewis6991/gitsigns.nvim",
             config = function()
                 require("gitsigns").setup {
-                    signs = {},
                     on_attach = function(bufnr)
                         local gs = package.loaded.gitsigns
                         vim.keymap.set("n", "<leader>z", function()
@@ -1170,6 +1169,7 @@ require("lazy").setup({
         {
             "nvim-treesitter/nvim-treesitter",
             -- version = "v0.9.2",
+            version = "*",
             build = ":TSUpdate",
             config = function()
                 require("nvim-treesitter.configs").setup({
@@ -1186,7 +1186,7 @@ require("lazy").setup({
         -- Treesitter text objects (pinned to compatible version)
         {
             "nvim-treesitter/nvim-treesitter-textobjects",
-            -- commit = "ad8f0a472148c3e0ae9f7b66f03a8edd53a94222",
+            version = "*", 
             dependencies = {"nvim-treesitter/nvim-treesitter"},
             config = function()
                 require("nvim-treesitter.configs").setup({
